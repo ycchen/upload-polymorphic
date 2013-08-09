@@ -1,0 +1,30 @@
+<%= nested_form_for(@article, :html =>{:multipart => true}) do |f| %>
+  <% if @article.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@article.errors.count, "error") %> prohibited this article from being saved:</h2>
+
+      <ul>
+      <% @article.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :title %><br>
+    <%= f.text_field :title %>
+  </div>
+  <%= f.link_to_add t('.add_image'), :pictures %>
+  
+  <%= f.fields_for :pictures do |p| %>
+  <%= image_tag(p.object.file.url, :heigh => 200, :width => 200) %>
+  <%= p.label :file %>
+  <%= p.file_field :file %>
+  <%= p.link_to_remove t('.remove_image') %>
+  <% end %>
+  
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,76 @@
+== README
+
+This README would normally document whatever steps are necessary to get the
+application up and running.
+
+Things you may want to cover:
+
+* Ruby version
+
+* System dependencies
+
+* Configuration
+
+* Database creation
+
+* Database initialization
+
+* How to run the test suite
+
+* Services (job queues, cache servers, search engines, etc.)
+
+* Deployment instructions
+
+* ...
+
+
+Please feel free to use a different markup language if you do not plan to run
+<tt>rake doc:app</tt>.
+1. Generate article model
+$ rails g scaffold article title:string 
+
+2. Generate picture model
+$ rails g model picture attachable:references file:string
+
+3. add the polymorphic relationship before execution the migration
+class CreatePictures < ActiveRecord::Migration
+  def change
+    create_table :pictures do |t|
+      t.references :attachable, index: true, :polymorphic => true
+      t.string :file
+
+      t.timestamps
+    end
+  end
+end
+
+4. Install nested_form
+$ rails g nested_form:install
+
+5. modified assets\javascripts\application.js to add nested_form js
+//= require jquery_nested_form
+
+6. rails generate uploader file
+-- models\article.rb
+has_many :pictures, :as => :attachable, :dependent => :destroy
+accepts_nested_attributes_for :pictures, :allow_destroy => true
+
+-- models\picture.rb
+belongs_to :article, polymorphic: true
+mount_uploader :file, FileUploader
+
+-- views\article\_form.html.erb
+  <%= f.fields_for :pictures do |p| %>
+  <%= image_tag(p.object.file.url, :heigh => 200, :width => 200) %>
+  <%= p.label :file %>
+  <%= p.file_field :file %>
+  <%= p.link_to_remove t('.remove_image') %>
+  <% end %>
+  <%= f.link_to_add t('.add_image'), :pictures %>
+
+== Generate product model
+$ rails g scaffold product name:string price:decimal
+
+-- add relationship to product and picture models
+
+
