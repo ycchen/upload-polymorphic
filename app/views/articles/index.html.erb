@@ -16,7 +16,7 @@
         <td><%= article.title %></td>
         <td>
             <% article.pictures.each do |pic|  %>
-              <%= image_tag(pic.file.url, heigh: 100, width: 100) %>
+              <%= image_tag(pic.file_url, heigh:200, width:200) %>
             <% end %>
         </td>
         <td><%= link_to 'Show', article %></td>
